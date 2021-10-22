@@ -1,17 +1,18 @@
 <?php
-require_once("../includes/functions.php");
+require_once('../includes/functions.php');
 
 // FIELDS
-$username = $password = "";
+$username = $password = '';
 $isInvalid = false;
 
 // CHECK FOR LOGIN
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sanitisedPost = sanitiseArray($_POST);
-    printMessage("Received a POST request with the following data:<br>" . recursive_implode($sanitisedPost));
+    // DEBUG OUTPUT
+    // printMessage("Received a POST request with the following data:<br>" . recursive_implode($sanitisedPost));
 
     // CHECK FIELDS
-    if(isset($sanitisedPost['username']) && strlen($sanitisedPost['username']) >= 5 && strlen($sanitisedPost['username']) <= 30 && isset($sanitisedPost['password']) && preg_match("/((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S/", $sanitisedPost['password'])) {
+    if(isset($sanitisedPost['username']) && strlen($sanitisedPost['username']) >= 5 && strlen($sanitisedPost['username']) <= 30 && isset($sanitisedPost['password']) && preg_match('/((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{7,})\S/', $sanitisedPost['password'])) {
         $username = $sanitisedPost['username'];
         $password = $sanitisedPost['password'];
     }
@@ -29,9 +30,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $isInvalid = true;
         }
         else {
-            $stmt = $db->prepare("SELECT * FROM `user` WHERE username = ?");
+            $stmt = $db->prepare('SELECT * FROM `user` WHERE username = ?');
             if($stmt) {
-                $stmt->bind_param("s", $username);
+                $stmt->bind_param('s', $username);
                 $stmt->execute();
                 $rs = $stmt->get_result();
                 // clean up transaction
@@ -43,8 +44,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                         // GET ROLES
                         $roles = [];
                         $id = strval($result['id']);
-                        $stmt = $db->prepare("SELECT role_id FROM `role_management` WHERE user_id = ?");
-                        $stmt->bind_param("s", $id);
+                        $stmt = $db->prepare('SELECT role_id FROM `role_management` WHERE user_id = ?');
+                        $stmt->bind_param('s', $id);
                         $stmt->execute();
                         $rs = $stmt->get_result();
                         // clean up transaction
@@ -68,17 +69,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                         session_regenerate_id();
 
                         printMessage("Willkommen " . $_SESSION['firstname'] . " " . $_SESSION['lastname'] . " - Du wurdest erfolgreich angemeldet.", MSG_SUCCESS);
-                    } else {
+                    }
+                    else {
                         $isInvalid = true;
                         printMessage("Ungültige Benutzerdaten. Bitte erneut versuchen.", MSG_ERROR);
                     }
-                } else {
+                }
+                else {
                     $isInvalid = true;
                     printMessage("Ungültige Benutzerdaten. Bitte erneut versuchen.", MSG_ERROR);
                 }
-            } else {
-                // TODO: Remove before release
-                printMessage("Fehler bei der Abfrage der Benutzerdaten: <br>" . $db->error);
+            }
+            else {
+                // DEBUG OUTPUT
+                // printMessage("Fehler bei der Abfrage der Benutzerdaten: <br>" . $db->error);
+                printMessage("Fehler bei der Abfrage der Benutzerdaten. Bitte später erneut versuchen.", MSG_ERROR);
             }
         }
     }
@@ -113,11 +118,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="navbar-nav w-100 text-end">
         <div class="nav-item text-nowrap">
             <?php
-            if(isLoggedIn()) {
-                echo '<a class="nav-link px-3" href="logout.php">Abmelden</a>';
-            } else {
-                echo '<a class="nav-link px-3" href="login.php">Anmelden</a>';
-            }
+                if(isLoggedIn()) {
+                    echo '<a class="nav-link px-3" href="logout.php">Abmelden</a>';
+                }
+                else {
+                    echo '<a class="nav-link px-3" href="login.php">Anmelden</a>';
+                }
             ?>
         </div>
     </div>
@@ -139,73 +145,75 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </ul>
 
                 <?php
-                if(isLoggedIn()) {
-                    /* standard nav entries for logged in users */
-                    echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                            <span>Verwaltung</span>
-                        </h6>
-                        <ul class="nav flex-column mb-2">
-                            <li class="nav-item">
-                                <a class="nav-link" href="user.php">
-                                    <i class="ri-user-search-fill"></i> Benutzerprofil
-                                </a>
-                            </li>';
+                    if(isLoggedIn()) {
+                        /* standard nav entries for logged in users */
+                        echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                                <span>Verwaltung</span>
+                            </h6>
+                            <ul class="nav flex-column mb-2">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="user.php">
+                                        <i class="ri-user-search-fill"></i> Benutzerprofil
+                                    </a>
+                                </li>';
 
-                    /* additional nav entry for authors and administrators */
-                    if(hasRole(ROLE_AUTHOR) || hasRole(ROLE_ADMIN)) {
-                        echo '<li class="nav-item">
-                                <a class="nav-link" href="alerts.php">
-                                    <i class="ri-alarm-warning-line"></i> Benachrichtigungen
-                                </a>
-                            </li>';
+                        /* additional nav entry for authors and administrators */
+                        if(hasRole(ROLE_AUTHOR) || hasRole(ROLE_ADMIN)) {
+                            echo '<li class="nav-item">
+                                    <a class="nav-link" href="alerts.php">
+                                        <i class="ri-alarm-warning-line"></i> Benachrichtigungen
+                                    </a>
+                                </li>';
+                        }
+
+                        /* closing tag for nav entries */
+                        echo '</ul>';
                     }
-
-                    /* closing tag for nav entries */
-                    echo '</ul>';
-                } else {
-                    echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                            <span>Aktionen</span>
-                        </h6>
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#">
-                                    <i class="ri-user-shared-fill"></i> Anmeldung
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="register.php">
-                                    <i class="ri-user-add-fill"></i> Registrierung
-                                </a>
-                            </li>
-                        </ul>';
-                }
+                    else {
+                        echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                                <span>Aktionen</span>
+                            </h6>
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#">
+                                        <i class="ri-user-shared-fill"></i> Anmeldung
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="register.php">
+                                        <i class="ri-user-add-fill"></i> Registrierung
+                                    </a>
+                                </li>
+                            </ul>';
+                    }
                 ?>
                 </ul>
             </div>
         </nav>
 
         <?php
-        // DISPLAY MESSAGES TO THE USER (IF AVAILABLE)
-        if(isset($GLOBALS['debug_msg']) && !empty($GLOBALS['debug_msg'])) {
-            echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
-                        <div class="alert alert-secondary" role="alert">
-                            <b>DEBUG: </b>' . $GLOBALS['debug_msg'] . '
-                        </div>
-                    </main>';
-        }
-        if(isset($GLOBALS['error_msg']) && !empty($GLOBALS['error_msg'])) {
-            echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
-                        <div class="alert alert-danger" role="alert">
-                            <b>FEHLER: </b>' . $GLOBALS['error_msg'] . '
-                        </div>
-                    </main>';
-        } elseif(isset($GLOBALS['success_msg']) && !empty($GLOBALS['success_msg'])) {
-            echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
-                        <div class="alert alert-success" role="alert">
-                            <b>INFO: </b>' . $GLOBALS['success_msg'] . '
-                        </div>
-                    </main>';
-        }
+            // DISPLAY MESSAGES TO THE USER (IF AVAILABLE)
+            if(isset($GLOBALS['debug_msg']) && !empty($GLOBALS['debug_msg'])) {
+                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                            <div class="alert alert-secondary" role="alert">
+                                <b>DEBUG: </b>' . $GLOBALS['debug_msg'] . '
+                            </div>
+                        </main>';
+            }
+            if(isset($GLOBALS['error_msg']) && !empty($GLOBALS['error_msg'])) {
+                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                            <div class="alert alert-danger" role="alert">
+                                <b>FEHLER: </b>' . $GLOBALS['error_msg'] . '
+                            </div>
+                        </main>';
+            }
+            elseif(isset($GLOBALS['success_msg']) && !empty($GLOBALS['success_msg'])) {
+                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                            <div class="alert alert-success" role="alert">
+                                <b>INFO: </b>' . $GLOBALS['success_msg'] . '
+                            </div>
+                        </main>';
+            }
         ?>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">

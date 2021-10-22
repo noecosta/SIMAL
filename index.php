@@ -1,5 +1,5 @@
 <?php
-require_once("includes/functions.php");
+require_once('includes/functions.php');
 
 // FIELDS
 $alerts = [];
@@ -10,7 +10,7 @@ if($db == Null) {
     printMessage("Fehler bei der Aktualisierung der Benachrichtigungen. Bitte versuchen Sie es später erneut.", MSG_ERROR);
 }
 else {
-    $stmt = $db->prepare("
+    $stmt = $db->prepare('
         SELECT
             al.id,
             al.title,
@@ -24,8 +24,9 @@ else {
         WHERE al.isDeleted = 0
           AND al.publish_from <= CURRENT_DATE
           AND (al.publish_to >= CURRENT_DATE || al.publish_to IS NULL)
-        ORDER BY al.publish_from DESC, al.id DESC /* newest first */"
-    );
+        ORDER BY al.publish_from DESC, al.id DESC /* newest first */
+        LIMIT 12
+    ');
     $stmt->execute();
     $rs = $stmt->get_result();
     // clean up transaction
@@ -69,11 +70,12 @@ else {
     <div class="navbar-nav w-100 text-end">
         <div class="nav-item text-nowrap">
             <?php
-            if(isLoggedIn()) {
-                echo '<a class="nav-link px-3" href="manage/logout.php">Abmelden</a>';
-            } else {
-                echo '<a class="nav-link px-3" href="manage/login.php">Anmelden</a>';
-            }
+                if(isLoggedIn()) {
+                    echo '<a class="nav-link px-3" href="manage/logout.php">Abmelden</a>';
+                }
+                else {
+                    echo '<a class="nav-link px-3" href="manage/login.php">Anmelden</a>';
+                }
             ?>
         </div>
     </div>
@@ -95,72 +97,73 @@ else {
                 </ul>
 
                 <?php
-                if(isLoggedIn()) {
-                    /* standard nav entries for logged in users */
-                    echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                                <span>Verwaltung</span>
-                            </h6>
-                            <ul class="nav flex-column mb-2">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="manage/user.php">
-                                        <i class="ri-user-search-fill"></i> Benutzerprofil
-                                    </a>
-                                </li>';
+                    if(isLoggedIn()) {
+                        /* standard nav entries for logged in users */
+                        echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                                    <span>Verwaltung</span>
+                                </h6>
+                                <ul class="nav flex-column mb-2">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="manage/user.php">
+                                            <i class="ri-user-search-fill"></i> Benutzerprofil
+                                        </a>
+                                    </li>';
 
-                    /* additional nav entry for authors and administrators */
-                    if(hasRole(ROLE_AUTHOR) || hasRole(ROLE_ADMIN)) {
-                        echo '<li class="nav-item">
-                                    <a class="nav-link" href="manage/alerts.php">
-                                        <i class="ri-alarm-warning-line"></i> Benachrichtigungen
-                                    </a>
-                                </li>';
+                        /* additional nav entry for authors and administrators */
+                        if(hasRole(ROLE_AUTHOR) || hasRole(ROLE_ADMIN)) {
+                            echo '<li class="nav-item">
+                                        <a class="nav-link" href="manage/alerts.php">
+                                            <i class="ri-alarm-warning-line"></i> Benachrichtigungen
+                                        </a>
+                                    </li>';
+                        }
+
+                        /* closing tag for nav entries */
+                        echo '</ul>';
                     }
-
-                    /* closing tag for nav entries */
-                    echo '</ul>';
-                } else {
-                    echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                                <span>Aktionen</span>
-                            </h6>
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="manage/login.php">
-                                        <i class="ri-user-shared-fill"></i> Anmeldung
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="manage/register.php">
-                                        <i class="ri-user-add-fill"></i> Registrierung
-                                    </a>
-                                </li>
-                            </ul>';
-                }
+                    else {
+                        echo '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                                    <span>Aktionen</span>
+                                </h6>
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="manage/login.php">
+                                            <i class="ri-user-shared-fill"></i> Anmeldung
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="manage/register.php">
+                                            <i class="ri-user-add-fill"></i> Registrierung
+                                        </a>
+                                    </li>
+                                </ul>';
+                    }
                 ?>
             </div>
         </nav>
 
         <?php
-        // DISPLAY MESSAGES TO THE USER (IF AVAILABLE)
-        if(isset($GLOBALS['debug_msg']) && !empty($GLOBALS['debug_msg'])) {
-            echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
-                        <div class="alert alert-secondary" role="alert">
-                            <b>DEBUG: </b>' . $GLOBALS['debug_msg'] . '
-                        </div>
-                    </main>';
-        }
-        if(isset($GLOBALS['error_msg']) && !empty($GLOBALS['error_msg'])) {
-            echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
-                        <div class="alert alert-danger" role="alert">
-                            <b>FEHLER: </b>' . $GLOBALS['error_msg'] . '
-                        </div>
-                    </main>';
-        } elseif(isset($GLOBALS['success_msg']) && !empty($GLOBALS['success_msg'])) {
-            echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
-                        <div class="alert alert-success" role="alert">
-                            <b>INFO: </b>' . $GLOBALS['success_msg'] . '
-                        </div>
-                    </main>';
-        }
+            // DISPLAY MESSAGES TO THE USER (IF AVAILABLE)
+            if(isset($GLOBALS['debug_msg']) && !empty($GLOBALS['debug_msg'])) {
+                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                            <div class="alert alert-secondary" role="alert">
+                                <b>DEBUG: </b>' . $GLOBALS['debug_msg'] . '
+                            </div>
+                        </main>';
+            }
+            if(isset($GLOBALS['error_msg']) && !empty($GLOBALS['error_msg'])) {
+                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                            <div class="alert alert-danger" role="alert">
+                                <b>FEHLER: </b>' . $GLOBALS['error_msg'] . '
+                            </div>
+                        </main>';
+            } elseif(isset($GLOBALS['success_msg']) && !empty($GLOBALS['success_msg'])) {
+                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                            <div class="alert alert-success" role="alert">
+                                <b>INFO: </b>' . $GLOBALS['success_msg'] . '
+                            </div>
+                        </main>';
+            }
         ?>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -173,15 +176,15 @@ else {
                             // GET AFFECTED REGIONS
                             $regions = [];
                             $id = strval($entry['id']);
-                            $stmt = $db->prepare("
+                            $stmt = $db->prepare('
                                 SELECT
-                                    CONCAT(re.shortform, \" - \", re.longform) AS region
+                                    CONCAT(re.shortform, " - ", re.longform) AS region
                                 FROM alert_region ar
                                 INNER JOIN region re ON re.id = ar.region_id
                                 WHERE ar.alert_id = ?
                                 ORDER BY re.shortform ASC
-                            ");
-                            $stmt->bind_param("s", $id);
+                            ');
+                            $stmt->bind_param('s', $id);
                             $stmt->execute();
                             $rs = $stmt->get_result();
                             if($rs->num_rows > 0) {
@@ -190,24 +193,24 @@ else {
                                 }
                             }
 
-                            // CHOOSE WHAT CARD LAYOUT TO DISPLAY
-                            $class = "";
-                            $cardTitle = "";
+                            // DECIDE WHAT CARD LAYOUT TO DISPLAY
+                            $class = '';
+                            $cardTitle = '';
                             switch($entry['state']) {
-                                case "INFO":
-                                    $class = "bg-info";
+                                case 'INFO':
+                                    $class = 'bg-info';
                                     $cardTitle = "Information";
                                     break;
-                                case "WARN":
-                                    $class = "bg-warning";
+                                case 'WARN':
+                                    $class = 'bg-warning';
                                     $cardTitle = "Warnung";
                                     break;
-                                case "DANGER":
-                                    $class = "bg-danger";
+                                case 'DANGER':
+                                    $class = 'bg-danger';
                                     $cardTitle = "Gefahr";
                                     break;
                                 default:
-                                    $class = "bg-info";
+                                    $class = 'bg-info';
                                     $cardTitle = "Information";
                             }
 
@@ -221,8 +224,8 @@ else {
                                             </span>
                                     </div>
                                     <div class="card-body ' . $class .'">
-                                        <h5 class="card-title">' . $entry["title"] . '</h5>
-                                        <p class="card-text">' . $entry["description"] . '</p>
+                                        <h5 class="card-title">' . $entry['title'] . '</h5>
+                                        <p class="card-text">' . $entry['description'] . '</p>
                                         <div class="border-top my-3"></div>
                                         <b>Betroffene Regionen:</b>
                                         <ul class="list">' . PHP_EOL;
@@ -240,7 +243,7 @@ else {
                             // footer
                             echo '</div>
                                     <div class="card-footer text-muted small">
-                                        <i class="ri-calendar-2-line"></i> ' . date('d.m.Y', strtotime($entry["publish_from"]));
+                                        <i class="ri-calendar-2-line"></i> ' . date('d.m.Y', strtotime($entry['publish_from']));
                             if($entry['publish_to'] != Null) {
                                 echo ' - ' . date('d.m.Y', strtotime($entry['publish_to'])) . PHP_EOL;
                             }
