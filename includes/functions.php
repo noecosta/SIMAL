@@ -154,9 +154,9 @@ function showErrorPage($msg, $redirect, $title="Es ist ein Fehler aufgetreten.",
     <div class="d-inline-flex w-100 justify-content-center align-items-center vh-100">
         <h1 class="me-3 pe-3 text-white align-top border-end align-content-center">SIMAL</h1>
         <div class="text-white align-middle">
-            <h2 class="fw-bold lead" id="desc">' . $title . '</h2>
+            <h2 class="fw-bold lead" id="title">' . $title . '</h2>
             <h2 class="fw-light lead" id="desc">' . $msg . '</h2>
-            <div class="align-middle small text-muted">
+            <div class="align-middle small text-muted" id="ref">
 ';
     if($automated) {
         echo '        Sie werden in <span id="cd"> </span> Sekunden zu <a href="' . $url . '">' . $url . '</a> weitergeleitet.
@@ -164,7 +164,7 @@ function showErrorPage($msg, $redirect, $title="Es ist ein Fehler aufgetreten.",
     </div>
     </div>
 
-    <script type="text/javascript">
+    <script>
     let sec = 10;
     let fnc = function () {
         sec = sec - 1;
