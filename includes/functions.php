@@ -128,10 +128,25 @@ function isDateValid($date): bool {
     return true;
 }
 
+function endsWith($haystack, $needle) {
+    return substr_compare($haystack, $needle, -strlen($needle)) === 0;
+}
+
 function showErrorPage($msg, $redirect, $title="Es ist ein Fehler aufgetreten.", $automated=true): void {
     ob_start();
     ob_get_clean();
-    $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . $redirect;
+    // fix for different configurations
+    $request = dirname($_SERVER['REQUEST_URI']);
+    if(endsWith($request, '/manage')) {
+        $request = dirname($request);
+        if($request == '\\') {
+            $request = '/';
+        } else {
+            $request .= '/';
+        }
+    }
+    $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'] . $request;
+    $url = $baseUrl . $redirect;
     echo '
 <!doctype html>
 <html lang="en">
@@ -144,11 +159,11 @@ function showErrorPage($msg, $redirect, $title="Es ist ein Fehler aufgetreten.",
     <!-- Template from: https://getbootstrap.com/docs/5.0/examples/dashboard/ -->
 
     <!-- Bootstrap core CSS -->
-    <link href="/simal/includes/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/simal/includes/assets/css/remixicon.css" rel="stylesheet">
+    <link href="' . $baseUrl . 'includes/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="' . $baseUrl . 'includes/assets/css/remixicon.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/simal/includes/assets/css/main.css" rel="stylesheet">
+    <link href="' . $baseUrl . 'includes/assets/css/main.css" rel="stylesheet">
 </head>
 <body class="bg-dark">
     <div class="d-inline-flex w-100 justify-content-center align-items-center vh-100">
@@ -187,8 +202,8 @@ function showErrorPage($msg, $redirect, $title="Es ist ein Fehler aufgetreten.",
     </div>
 ';
     }
-echo '
-    <script src="/simal/includes/assets/js/bootstrap.bundle.min.js"></script>
+    echo '
+    <script src="' . $baseUrl . 'includes/assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 ';
