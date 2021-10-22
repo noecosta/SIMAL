@@ -220,37 +220,36 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </ul>';
                     }
                 ?>
-                </ul>
             </div>
         </nav>
 
         <?php
             // DISPLAY MESSAGES TO THE USER (IF AVAILABLE)
             if(isset($GLOBALS['debug_msg']) && !empty($GLOBALS['debug_msg'])) {
-                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                echo '<div class="col-md-9 ms-sm-auto col-lg-10 p-0">
                             <div class="alert alert-secondary" role="alert">
                                 <b>DEBUG: </b>' . $GLOBALS['debug_msg'] . '
                             </div>
-                        </main>';
+                        </div>';
             }
             if(isset($GLOBALS['error_msg']) && !empty($GLOBALS['error_msg'])) {
-                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                echo '<div class="col-md-9 ms-sm-auto col-lg-10 p-0">
                             <div class="alert alert-danger" role="alert">
                                 <b>FEHLER: </b>' . $GLOBALS['error_msg'] . '
                             </div>
-                        </main>';
+                        </div>';
             }
             elseif(isset($GLOBALS['success_msg']) && !empty($GLOBALS['success_msg'])) {
-                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                echo '<div class="col-md-9 ms-sm-auto col-lg-10 p-0">
                             <div class="alert alert-success" role="alert">
                                 <b>INFO: </b>' . $GLOBALS['success_msg'] . '
                             </div>
-                        </main>';
+                        </div>';
             }
         ?>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <main class="form-signin">
+            <div class="form-signin">
                 <form method="post" target="_self">
                     <h1 class="h3 mb-3 fw-normal">Registrierung</h1>
                     <div class="form-floating">
@@ -289,7 +288,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <small><i class="ri-information-line"></i> Bereits ein Benutzerprofil? Melde dich <a
                                 href="login.php">hier</a> an.</small>
                 </form>
-            </main>
+            </div>
         </main>
     </div>
 </div>

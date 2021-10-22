@@ -488,25 +488,25 @@ if(isset($data['mode'])) {
         <?php
             // DISPLAY MESSAGES TO THE USER (IF AVAILABLE)
             if(isset($GLOBALS['debug_msg']) && !empty($GLOBALS['debug_msg'])) {
-                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                echo '<div class="col-md-9 ms-sm-auto col-lg-10 p-0">
                             <div class="alert alert-secondary" role="alert">
                                 <b>DEBUG: </b>' . $GLOBALS['debug_msg'] . '
                             </div>
-                        </main>';
+                        </div>';
             }
             if(isset($GLOBALS['error_msg']) && !empty($GLOBALS['error_msg'])) {
-                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                echo '<div class="col-md-9 ms-sm-auto col-lg-10 p-0">
                             <div class="alert alert-danger" role="alert">
                                 <b>FEHLER: </b>' . $GLOBALS['error_msg'] . '
                             </div>
-                        </main>';
+                        </div>';
             }
             elseif(isset($GLOBALS['success_msg']) && !empty($GLOBALS['success_msg'])) {
-                echo '<main class="col-md-9 ms-sm-auto col-lg-10 p-0">
+                echo '<div class="col-md-9 ms-sm-auto col-lg-10 p-0">
                             <div class="alert alert-success" role="alert">
                                 <b>INFO: </b>' . $GLOBALS['success_msg'] . '
                             </div>
-                        </main>';
+                        </div>';
             }
         ?>
 
@@ -527,7 +527,7 @@ if(isset($data['mode'])) {
                                     </div>
                                 </div>
                             </div>
-                            <main class="table-responsive">
+                            <div class="table-responsive">
                                 <table class="table table-sm">
                                     <thead>
                                         <tr>
@@ -636,7 +636,7 @@ if(isset($data['mode'])) {
                     // print footer
                     echo '                    </tbody>
                                 </table>
-                            </main>
+                            </div>
                         </main>';
                     break;
 
@@ -659,7 +659,8 @@ if(isset($data['mode'])) {
                                       <div class="form-group cust-form-group row">
                                         <label for="category" class="col-2 col-form-label">Kategorie</label> 
                                         <div class="col-10">
-                                          <select id="category" name="category" class="form-control" required>';
+                                          <select id="category" name="category" class="form-control" required>
+                                            <option value="" disabled>Bitte auswählen</option>'.PHP_EOL;
                     // grab alert states from the database
                     $states = [];
                     $db = getDbLink();
@@ -784,7 +785,7 @@ if(isset($data['mode'])) {
                                             <div class="input-group-prepend">
                                               <div class="input-group-text">von</div>
                                             </div>
-                                            <input type="date" id="from" name="from" value="' . $from . '" min="2021-01-01" max="" class="form-control">
+                                            <input type="date" id="from" name="from" value="' . $from . '" min="2021-01-01" class="form-control">
                                           </div>
                                         </div>
                                         <div class="col-5">
@@ -792,7 +793,7 @@ if(isset($data['mode'])) {
                                             <div class="input-group-prepend">
                                               <div class="input-group-text">bis</div>
                                             </div> 
-                                            <input type="date" id="to" name="to" value="' . $to . '" min="2021-01-01" max="" class="form-control">
+                                            <input type="date" id="to" name="to" value="' . $to . '" min="2021-01-01" class="form-control">
                                           </div>
                                         </div>
                                       </div>
@@ -827,7 +828,8 @@ if(isset($data['mode'])) {
                                       <div class="form-group cust-form-group row">
                                         <label for="category" class="col-2 col-form-label">Kategorie</label> 
                                         <div class="col-10">
-                                          <select id="category" name="category" class="form-control" required>';
+                                          <select id="category" name="category" class="form-control" required>
+                                            <option value="" disabled>Bitte auswählen</option>'.PHP_EOL;
                     // grab alert states from the database
                     $states = [];
                     $db = getDbLink();
@@ -936,7 +938,7 @@ if(isset($data['mode'])) {
                                             <div class="input-group-prepend">
                                               <div class="input-group-text">von</div>
                                             </div>
-                                            <input type="date" id="from" name="from" value="' . $from . '" min="2021-01-01" max="" class="form-control">
+                                            <input type="date" id="from" name="from" value="' . $from . '" min="2021-01-01" class="form-control">
                                           </div>
                                         </div>
                                         <div class="col-5">
@@ -944,7 +946,7 @@ if(isset($data['mode'])) {
                                             <div class="input-group-prepend">
                                               <div class="input-group-text">bis</div>
                                             </div> 
-                                            <input type="date" id="to" name="to" value="' . $to . '" min="2021-01-01" max="" class="form-control">
+                                            <input type="date" id="to" name="to" value="' . $to . '" min="2021-01-01" class="form-control">
                                           </div>
                                         </div>
                                       </div>
