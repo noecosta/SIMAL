@@ -131,7 +131,7 @@ function isDateValid($date): bool {
 function showErrorPage($msg, $redirect, $title="Es ist ein Fehler aufgetreten.", $automated=true): void {
     ob_start();
     ob_get_clean();
-    $url = ($_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'] . '/simal/' . $redirect;
+    $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . $redirect;
     echo '
 <!doctype html>
 <html lang="en">

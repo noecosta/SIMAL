@@ -3,11 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 20. Okt 2021 um 15:01
+-- Erstellungszeit: 22. Okt 2021 um 17:13
 -- Server-Version: 10.5.5-MariaDB
 -- PHP-Version: 7.4.4
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -21,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `simal`
 --
+CREATE DATABASE IF NOT EXISTS `simal` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `simal`;
 
 -- --------------------------------------------------------
 
@@ -48,7 +49,7 @@ INSERT INTO `alert` (`id`, `state`, `title`, `description`, `informations`, `pub
 (1, 1, 'Willkommen', 'Herzlich Willkommen auf der SIMAL Applikation. Hier stehen relevante Informationen, welche die Bevölkerung auf diverse Gefahren und Warnungen hinweisen sollen.', 'Hier würden zusätzliche Informationen an die Bevölkerung stehen. 👻', '2021-10-20', NULL, 1, 0),
 (2, 3, 'Sars-CoV-2 Verbreitungsgefahr', 'Die neusten Mutationen des grassierenden Sars-CoV-2 Viruses verbreiten sich erheblich schneller als bisherige Varianten.', 'Bitte isolieren Sie sich bei auftretenden Symptomen umgehend und kontaktieren Sie ihren Hausarzt oder rufen Sie bei der lokalen Gesundheitsbehörde an. Es wird generell empfohlen auf alle nicht-notwendigen sozialen Interaktionen zu verzichten.', '2021-10-20', '2022-12-31', 2, 0),
 (3, 2, 'Pestizide im Grundwasser', 'Im Kanton Aargau wurden am Donnerstagmorgen bei einer regulären Kontrolle Pestizide im Grundwasser entdeckt.', 'Bitte informieren Sie sich bei Ihrer zuständigen Behörde über eventuelle Massnahmen und Sicherheitsvorkehrungen. Es sollte bis auf weiteres kein Trinkwasser aus Grundquellen bezogen werden; zur Körperhygiene kann bedenkenlos Grundwasser verwendet werden.', '2021-10-20', NULL, 2, 0),
-(4, 1, 'Nächste Abstimmungen', 'Die Unterlagen zu den nächsten bundesweiten Abstimmungen sind bei ihrem lokalen Amt verfügbar.\r\nWir würden uns freuen wenn Sie sich daran beteiligen sollten.', NULL, '2021-10-20', '2021-10-31', 2, 0);
+(4, 1, 'Nächste Abstimmungen', 'Die Unterlagen zu den nächsten bundesweiten Abstimmungen sind bei ihrem lokalen Amt verfügbar.\r\nWir würden uns freuen wenn Sie sich daran beteiligen sollten.', NULL, '2021-10-20', '2021-10-31', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -314,7 +315,6 @@ ALTER TABLE `alert_region`
 ALTER TABLE `role_management`
   ADD CONSTRAINT `role_fk` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
   ADD CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
-SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
