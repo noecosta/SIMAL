@@ -66,7 +66,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $_SESSION['roles'] = $roles;
 
                         // CHANGE SESSION ID
-                        session_regenerate_id();
+                        session_regenerate_id(true);
 
                         printMessage("Willkommen " . $_SESSION['firstname'] . " " . $_SESSION['lastname'] . " - Du wurdest erfolgreich angemeldet.", MSG_SUCCESS);
                     }
