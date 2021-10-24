@@ -5,6 +5,11 @@ require_once('../includes/functions.php');
 $username = $password = '';
 $isInvalid = false;
 
+// CHECK IF USER IS ALREADY LOGGED IN
+if(isLoggedIn()) {
+    showErrorPage("Sie sind bereits im System angemeldet.", "manage/user.php");
+}
+
 // CHECK FOR LOGIN
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sanitisedPost = sanitiseArray($_POST);

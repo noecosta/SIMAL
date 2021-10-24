@@ -5,6 +5,11 @@ require_once('../includes/functions.php');
 $firstname = $lastname = $mail = $username = $password = '';
 $isInvalid = false;
 
+// CHECK IF USER IS ALREADY LOGGED IN
+if(isLoggedIn()) {
+    showErrorPage("Sie können keine Registrierung durchführen, während Sie angemeldet sind.", "manage/user.php");
+}
+
 // CHECK FOR LOGIN
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sanitisedPost = sanitiseArray($_POST);
@@ -102,7 +107,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                         printMessage("Benutzerkonto erfolgreich angelegt.", MSG_SUCCESS);
 
                         // CHANGE SESSION ID
-                        session_regenerate_id();
+                        session_regenerate_id(true);
                     }
                     else {
                         // clean up transaction
